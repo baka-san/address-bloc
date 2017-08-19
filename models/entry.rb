@@ -8,8 +8,8 @@ class Entry
 	end
 
 	def to_s
-		p "Name: #{@name}\n"\
-		  "Phone Number: #{@phone_number}\n"\
-		  "Email: #{@email}"
+		puts "Name: #{@name} \n" \
+		"Phone Number: #{@phone_number}\n" \
+    "Email: #{@email}" 
 	end
 end

@@ -21,8 +21,7 @@ class AddressBook
 	    index+= 1
 	  end
 
-	  @entries.insert(index, Entry.new(name, phone_number, email))
-	  
+	  @entries.insert(index, Entry.new(name, phone_number, email))  
 	end
 
 
@@ -42,6 +41,5 @@ class AddressBook
 		end
 
 		@entries.delete(entry_to_delete)
-
 	end
 end
