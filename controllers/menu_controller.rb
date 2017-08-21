@@ -79,30 +79,133 @@ class MenuController
   end
   
   def search_entries
+    print "Search by name: "
+    name = gets.chomp
+    match = address_book.binary_search(name)
+    system "clear"
+
+    if match
+      puts match.to_s
+      entry_submenu(match)
+    else
+      puts "No match found for #{name}"
+    end
   end
   
   def read_csv
+    print "Enter CSV file to import: "
+    file_name = gets.chomp
+    
+    # #2
+    if file_name.empty?
+      system "clear"
+      puts "No CSV file read"
+      main_menu
+    end
+    
+    # #3
+    begin
+      entry_count = address_book.import_from_csv(file_name).count
+      system "clear"
+      puts "#{entry_count} new entries added from #{file_name}"
+    rescue
+      puts "#{file_name} is not a valid CSV file, please enter the name of a valid CSV file"
+      read_csv
+    end
   end
+
+  # def search_submenu(entry)
+  #   puts "\nd - delete entry"
+  #   puts "e - edit this entry"
+  #   puts "m - return to main menu"
+
+  #   selection = gets.chomp
+  
+  #   case selection
+  #     when "d"
+  #       system "clear"
+  #       delete_entry(entry)
+  #       main_menu
+  #     when "e"
+  #       edit_entry(entry)
+  #       system "clear"
+  #       search_submenu
+  #     when "m"
+  #       system "clear"
+  #       main_menu
+  #     else
+  #       system "clear"
+  #       puts "#{selection} is not a valid input"
+  #       puts entry.to_s
+  #       search_submenu(entry)
+  #   end
+  # end
 
   def entry_submenu(entry)
     puts "n - next entry"
+    puts "p - previous entry"
     puts "d - delete entry"
     puts "e - edit this entry"
     puts "m - return to main menu"
   
-    selection = gets.chomp
+    selection = gets.chomp.downcase
   
     case selection
       when "n"
+      when "p"
       when "d"
-      when "e"
+        delte_entry(entry)
+        main_menu
+      when "e"      
+        edit_entry(entry)
+        entry_submenu(entry)
       when "m"
         system "clear"
         main_menu
       else
         system "clear"
         puts "#{selection} is not a valid input"
+        puts entry.to_s
         entry_submenu(entry)
     end
   end
+
+  def delte_entry(entry)
+    print "Are you sure you want to delete #{entry.name}? (Y/n)"
+    selection = gets.chomp
+
+    if(selection == 'Y')
+      @address_book.entries.delete(entry)
+      system "clear"
+      puts "#{entry.name} has been deleted"
+    elsif(selection == 'n')
+      system "clear"
+      puts "Entry was not deleted."
+      puts entry.to_s
+      entry_submenu(entry)
+    else
+      system "clear"
+      puts "Not a valid entry."
+      puts entry.to_s
+      entry_submenu(entry)
+    end
+  end
+
+  def edit_entry(entry)
+    print "Updated name: "
+    name = gets.chomp
+    print "Updated phone number: "
+    phone_number = gets.chomp
+    print "Updated email: "
+    email = gets.chomp
+
+    entry.name = name unless name.empty?
+    entry.phone_number = phone_number unless phone_number.empty?
+    entry.email = email unless email.empty?
+    system "clear"
+
+    puts "Updated entry:"
+    puts entry
+  end
+
 end
