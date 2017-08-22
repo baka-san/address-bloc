@@ -77,4 +77,8 @@ class AddressBook
 		return nil
 	end
 
+	# Delete entire book
+	def nuke
+		@entries.clear
+	end
 end
