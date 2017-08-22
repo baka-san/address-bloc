@@ -96,50 +96,22 @@ class MenuController
     print "Enter CSV file to import: "
     file_name = gets.chomp
     
-    # #2
     if file_name.empty?
       system "clear"
       puts "No CSV file read"
       main_menu
     end
     
-    # #3
     begin
       entry_count = address_book.import_from_csv(file_name).count
       system "clear"
       puts "#{entry_count} new entries added from #{file_name}"
     rescue
+      system "clear"
       puts "#{file_name} is not a valid CSV file, please enter the name of a valid CSV file"
-      read_csv
+      main_menu
     end
   end
-
-  # def search_submenu(entry)
-  #   puts "\nd - delete entry"
-  #   puts "e - edit this entry"
-  #   puts "m - return to main menu"
-
-  #   selection = gets.chomp
-  
-  #   case selection
-  #     when "d"
-  #       system "clear"
-  #       delete_entry(entry)
-  #       main_menu
-  #     when "e"
-  #       edit_entry(entry)
-  #       system "clear"
-  #       search_submenu
-  #     when "m"
-  #       system "clear"
-  #       main_menu
-  #     else
-  #       system "clear"
-  #       puts "#{selection} is not a valid input"
-  #       puts entry.to_s
-  #       search_submenu(entry)
-  #   end
-  # end
 
   def entry_submenu(entry)
     puts "n - next entry"
@@ -152,7 +124,15 @@ class MenuController
   
     case selection
       when "n"
+        entry = next_entry(entry)
+        system "clear"
+        puts entry.to_s
+        entry_submenu(entry)
       when "p"
+        entry = previous_entry(entry)
+        system "clear"
+        puts entry.to_s
+        entry_submenu(entry)
       when "d"
         delte_entry(entry)
         main_menu
@@ -168,6 +148,28 @@ class MenuController
         puts entry.to_s
         entry_submenu(entry)
     end
+  end
+
+  def next_entry(entry)
+    next_index = address_book.entries.index(entry) + 1
+    size = @address_book.entries.length
+
+    # If at last entry, go to beginning of book
+    next_index = next_index >= size ? 0 : next_index
+    entry = address_book.entries[next_index]
+
+    return entry
+  end
+
+  def previous_entry(entry)
+    prev_index = address_book.entries.index(entry) - 1
+    size = @address_book.entries.length
+
+    # If at first entry, go to end of book
+    prev_index = prev_index < 0 ? size - 1 : prev_index
+    entry = address_book.entries[prev_index]
+
+    return entry
   end
 
   def delte_entry(entry)
